@@ -48,6 +48,7 @@ def cor(obj_type="bird"):
 			MAX_X = width
 
 	print("Max Image Dimensions: " + str(MAX_X) + "x" + str(MAX_Y))	
+	print("Len(train_list): " + str(len(train_list)))	
 
 	# Create the output arrays for Keras
 	x_train = np.zeros([len(train_list), MAX_Y, MAX_X, NUM_CHANS], dtype=np.uint8)
@@ -94,6 +95,7 @@ def cor(obj_type="bird"):
 			# Load the image 
 			img = cv2.imread(img_listdir+sample+".jpg")
 			height, width, channels = img.shape
+			#print x_train.shape
 			x_train[single_obj_count, (MAX_Y/2-height/2):(MAX_Y/2-height/2+height), (MAX_X/2-width/2):(MAX_X/2-width/2+width), :] = img
 			temp_img = x_train[single_obj_count, :, :, :]
 			#cv2.imshow('Centered Image', temp_img)
@@ -101,16 +103,25 @@ def cor(obj_type="bird"):
 			#cv2.destroyAllWindows()
 			# Draw the vector on the image
 			vec_img = cv2.line(x_train[single_obj_count, :, :, :], (cent_x, cent_y), (img_cent_x, img_cent_y), (255,0,0),5)	
-			cv2.imshow('Centered Image', vec_img)
-			cv2.waitKey(0)
-			cv2.destroyAllWindows()
+			#cv2.imshow('Centered Image', vec_img)
+			#cv2.waitKey(0)
+			#cv2.destroyAllWindows()
 			# Make the labels
 			y_train[single_obj_count, 0] = vec_x
 			y_train[single_obj_count, 1] = vec_y
 			y_train[single_obj_count, 2] = vec_z
 			single_obj_count += 1
 
-				
+	# Trim the output array (delete empty entries)
+	mask = np.ones(len(train_list), dtype=bool)
+	mask[range(single_obj_count, len(train_list))] = False
+	x_train = x_train[mask, :, :, :]
+	y_train = y_train[mask, :]
+	print("Number of good images (1 bird): " + str(single_obj_count))
+	print("x_train size: " + str(x_train.shape))
+	print("y_train size: " + str(y_train.shape))
+
+	return x_train, y_train, x_train, y_train
 				
 		
 
