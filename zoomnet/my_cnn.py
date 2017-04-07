@@ -21,7 +21,7 @@ epochs = 4
 
 # the data, shuffled and split between train and test sets
 v = vec()
-(x_train, y_train), (x_test, y_test) = v.load_data()
+(x_train, y_train), (x_test, y_test) = v.load_pure()
 img_rows = x_train.shape[2]
 img_cols = x_train.shape[1]
 

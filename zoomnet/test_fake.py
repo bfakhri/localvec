@@ -5,12 +5,12 @@ from keras.models import Sequential
 from keras.layers import Dense, Dropout, Flatten
 from keras.layers import Conv2D, MaxPooling2D
 from keras import backend as K
-from vec import vec
+from fake_data import vec
 from keras.utils import plot_model
 
 
-batch_size = 1 
-epochs = 20
+batch_size = 16
+epochs = 1 
 
 activation_fnc = 'relu'
 #activation_fnc = 'tanh'
@@ -18,12 +18,12 @@ activation_fnc = 'relu'
 
 # the data, shuffled and split between train and test sets
 v = vec()
-(x_train, y_train), (x_trainval, y_trainval), (x_test, y_test) = v.load_pure()
+(x_train, y_train), (x_trainval, y_trainval), (x_test, y_test) = v.load_messy()
 # FOR DEBUGGING
-x_train = x_train[0:20, :, :, :]
-y_train = y_train[0:20, :]
-x_trainval = x_train
-y_trainval = y_train
+#x_train = x_train[0:20, :, :, :]
+#y_train = y_train[0:20, :]
+#x_trainval = x_train
+#y_trainval = y_train
 #x_train, y_train), (x_trainval, y_trainval), (x_test, y_test) = v.load_messy()
 img_rows = x_train.shape[2]
 img_cols = x_train.shape[1]

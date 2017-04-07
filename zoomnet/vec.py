@@ -5,6 +5,7 @@ import xml.etree.ElementTree as ET	# To read XML docs
 file_listdir = "../data/VOC2012/ImageSets/Main/"
 img_listdir = "../data/VOC2012/JPEGImages/"
 xml_listdir = "../data/VOC2012/Annotations/"
+dest_dir = "./output/"
 
 NUM_CHANS = 3
 VECT_DIMS = 3
@@ -16,7 +17,7 @@ class vec:
 		y = np.zeros([len(sample_list), VECT_DIMS], dtype=np.float32)
 		# Populate those arrays	
 		single_obj_count = 0
-		for sample in sample_list:
+		for idx,sample in enumerate(sample_list):
 			# Load the XML doc related to the image
 			tree = ET.parse(xml_listdir+sample+".xml")
 			root = tree.getroot()
@@ -43,7 +44,7 @@ class vec:
 				else:
 					vec_x = 0
 					vec_y = 0
-					vec_z = -1	
+					vec_z = 0	
 
 			if(obj_type_count <= 1):
 				# Load the image 
@@ -56,10 +57,14 @@ class vec:
 				#cv2.waitKey(0)
 				#cv2.destroyAllWindows()
 				# Draw the vector on the image
-				#vec_img = cv2.line(x[single_obj_count, :, :, :], (cent_x, cent_y), (img_cent_x, img_cent_y), (255,0,0),5)	
+				#lin_s = int(vec_z*40+1)
+				#print lin_s
+				#vec_img = cv2.line(x[single_obj_count, :, :, :], (cent_x, cent_y), (img_cent_x, img_cent_y), (200,100,50), lin_s)	
+				#vec_img = cv2.circle(vec_img, (img_cent_x, img_cent_y),  lin_s, (0,255,0), 2)	
 				#cv2.imshow('Centered Image', vec_img)
 				#cv2.waitKey(0)
 				#cv2.destroyAllWindows()
+				#cv2.imwrite(dest_dir+str(idx)+'_real.jpg', vec_img)
 				# Make the labels
 				y[single_obj_count, 0] = vec_x
 				y[single_obj_count, 1] = vec_y

@@ -5,12 +5,14 @@ from keras.models import Sequential
 from keras.layers import Dense, Dropout, Flatten
 from keras.layers import Conv2D, MaxPooling2D
 from keras import backend as K
-from vec import vec
+from fake_data import vec
 from keras.utils import plot_model
+from sklearn.metrics import mean_squared_error
+from math import sqrt
 
 
-batch_size = 1 
-epochs = 20
+batch_size = 1
+epochs = 1 
 
 activation_fnc = 'relu'
 #activation_fnc = 'tanh'
@@ -18,12 +20,13 @@ activation_fnc = 'relu'
 
 # the data, shuffled and split between train and test sets
 v = vec()
-(x_train, y_train), (x_trainval, y_trainval), (x_test, y_test) = v.load_pure()
+(x_train, y_train), (x_trainval, y_trainval), (x_test, y_test) = v.load_messy()
 # FOR DEBUGGING
-x_train = x_train[0:20, :, :, :]
-y_train = y_train[0:20, :]
-x_trainval = x_train
-y_trainval = y_train
+#x_train = x_train[0:20, :, :, :]
+y_train = y_train[:, 2]
+#x_trainval = x_train
+y_trainval = y_trainval[:,2]
+y_test = y_test[:,2]
 #x_train, y_train), (x_trainval, y_trainval), (x_test, y_test) = v.load_messy()
 img_rows = x_train.shape[2]
 img_cols = x_train.shape[1]
@@ -73,7 +76,7 @@ model.add(Dense(32, activation=activation_fnc))
 model.add(Dropout(0.5))
 model.add(Dense(32, activation=activation_fnc))
 model.add(Dropout(0.5))
-model.add(Dense(3, activation='linear'))
+model.add(Dense(1, activation='linear'))
 
 model.compile(loss=keras.losses.mean_squared_error,
               optimizer=keras.optimizers.RMSprop(),
@@ -86,9 +89,12 @@ model.fit(x_train, y_train,
           epochs=epochs,
           verbose=1,
           validation_data=(x_trainval, y_trainval))
-score = model.evaluate(x_test[1:30,:,:,:], y_test[1:30,:], verbose=0)
-print(model.predict(x_test[1:20,:,:,:]))
+score = model.evaluate(x_test[1:30,:,:,:], y_test[1:30], verbose=0)
+y_predicted = model.predict(x_test[1:30])
+rmse = sqrt(mean_squared_error(y_test[1:30], y_predicted[1:30]))
 print(y_test[1:20])
 print(model.predict(x_test[1:20,:,:,:]) - y_test[1:20])
 print('Test loss:', score[0])
 print('Test accuracy:', score[1])
+print('RMSE: ', rmse)
+
