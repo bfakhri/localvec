@@ -52,19 +52,26 @@ class vec:
 				height, width, channels = img.shape
 				#print x_train.shape
 				x[single_obj_count, (MAX_Y/2-height/2):(MAX_Y/2-height/2+height), (MAX_X/2-width/2):(MAX_X/2-width/2+width), :] = img
-				temp_img = x[single_obj_count, :, :, :]
+				temp_img = np.copy(x[single_obj_count, :, :, :])
+				og_img = np.copy(x[single_obj_count, :, :, :])
 				#cv2.imshow('Centered Image', temp_img)
 				#cv2.waitKey(0)
 				#cv2.destroyAllWindows()
 				# Draw the vector on the image
-				#lin_s = int(vec_z*40+1)
+				#lin_s = int(vec_z*70+1)
+				lin_s = 4 
 				#print lin_s
-				#vec_img = cv2.line(x[single_obj_count, :, :, :], (cent_x, cent_y), (img_cent_x, img_cent_y), (200,100,50), lin_s)	
-				#vec_img = cv2.circle(vec_img, (img_cent_x, img_cent_y),  lin_s, (0,255,0), 2)	
-				#cv2.imshow('Centered Image', vec_img)
-				#cv2.waitKey(0)
-				#cv2.destroyAllWindows()
-				#cv2.imwrite(dest_dir+str(idx)+'_real.jpg', vec_img)
+				vec_img = cv2.line(temp_img, (cent_x, cent_y), (img_cent_x, img_cent_y), (200,255,150), lin_s)	
+				offset = 10
+				vec_img = cv2.circle(vec_img, (cent_x, cent_y),  lin_s, (0,255,0), 2)	
+				vec_img = cv2.rectangle(vec_img, (x_min-offset, y_min-offset), (x_max+offset, y_max+offset), (0,255,100), 3)	
+				vec_img = cv2.circle(vec_img, (img_cent_x, img_cent_y),  lin_s+3, (0,0,255), 2)	
+				if(vec_z < 0.2 and vec_x > 100/float(MAX_X)):
+					#cv2.imshow('Centered Image', vec_img)
+					#cv2.waitKey(0)
+					#cv2.destroyAllWindows()
+					cv2.imwrite(dest_dir+str(idx)+'_real_v.jpg', vec_img)
+					cv2.imwrite(dest_dir+str(idx)+'_real_o.jpg', og_img)
 				# Make the labels
 				y[single_obj_count, 0] = vec_x
 				y[single_obj_count, 1] = vec_y

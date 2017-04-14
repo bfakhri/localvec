@@ -7,10 +7,13 @@ from keras.layers import Conv2D, MaxPooling2D
 from keras import backend as K
 from fake_data import vec
 from keras.utils import plot_model
+import cv2
 
 
-batch_size = 16
-epochs = 1 
+#batch_size = 256
+batch_size = 16 
+epochs = 6
+#epochs = 1
 
 activation_fnc = 'relu'
 #activation_fnc = 'tanh'
@@ -19,12 +22,6 @@ activation_fnc = 'relu'
 # the data, shuffled and split between train and test sets
 v = vec()
 (x_train, y_train), (x_trainval, y_trainval), (x_test, y_test) = v.load_messy()
-# FOR DEBUGGING
-#x_train = x_train[0:20, :, :, :]
-#y_train = y_train[0:20, :]
-#x_trainval = x_train
-#y_trainval = y_train
-#x_train, y_train), (x_trainval, y_trainval), (x_test, y_test) = v.load_messy()
 img_rows = x_train.shape[2]
 img_cols = x_train.shape[1]
 
@@ -69,8 +66,12 @@ model.add(Conv2D(32, kernel_size=(3, 3),
 model.add(MaxPooling2D(pool_size=(2, 2)))
 model.add(Dropout(0.25))
 model.add(Flatten())
-model.add(Dense(32, activation=activation_fnc))
+model.add(Dense(128, activation=activation_fnc))
 model.add(Dropout(0.5))
+model.add(Dense(64, activation=activation_fnc))
+model.add(Dropout(0.5))
+#model.add(Dense(32, activation=activation_fnc))
+#model.add(Dropout(0.5))
 model.add(Dense(32, activation=activation_fnc))
 model.add(Dropout(0.5))
 model.add(Dense(3, activation='linear'))
@@ -86,9 +87,23 @@ model.fit(x_train, y_train,
           epochs=epochs,
           verbose=1,
           validation_data=(x_trainval, y_trainval))
+
 score = model.evaluate(x_test[1:30,:,:,:], y_test[1:30,:], verbose=0)
-print(model.predict(x_test[1:20,:,:,:]))
-print(y_test[1:20])
-print(model.predict(x_test[1:20,:,:,:]) - y_test[1:20])
+
+predictions = model.predict(x_test[1:15,:,:,:])
+diff = y_test[1:15] - predictions
+print("----------Predictions-------------")
+print(predictions)
+print("----------GroundTruth-------------")
+print(y_test[1:15])
+print("----------Diff-------------")
+print(diff)
 print('Test loss:', score[0])
 print('Test accuracy:', score[1])
+
+for idx,pred in enumerate(predictions):
+	disp_img = x_test[idx]
+	cv2.circle(disp_img, (int(250*predictions[idx, 0]+250), int(250*predictions[idx, 1]+250)), int(predictions[idx, 2]*100), (255,255,255), -1)
+	cv2.imshow('Centered Image', disp_img)
+        cv2.waitKey(0)
+        cv2.destroyAllWindows()
