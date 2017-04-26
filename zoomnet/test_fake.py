@@ -12,7 +12,8 @@ import cv2
 
 #batch_size = 256
 batch_size = 16 
-epochs = 6
+#epochs = 6
+epochs = 4
 #epochs = 1
 
 activation_fnc = 'relu'
@@ -88,6 +89,9 @@ model.fit(x_train, y_train,
           verbose=1,
           validation_data=(x_trainval, y_trainval))
 
+model.save_weights('model.h5')
+print('Saved Model as model.h5')
+
 score = model.evaluate(x_test[1:30,:,:,:], y_test[1:30,:], verbose=0)
 
 predictions = model.predict(x_test[1:15,:,:,:])
@@ -103,7 +107,17 @@ print('Test accuracy:', score[1])
 
 for idx,pred in enumerate(predictions):
 	disp_img = x_test[idx]
-	cv2.circle(disp_img, (int(250*predictions[idx, 0]+250), int(250*predictions[idx, 1]+250)), int(predictions[idx, 2]*100), (255,255,255), -1)
+	pred_x = int(250*predictions[idx, 0]+250)
+	pred_y = int(250*predictions[idx, 1]+250)
+	pred_z = int(250*predictions[idx, 1]*100)+1
+	gt_x = y_test[idx, 0]
+	gt_y = y_test[idx, 1]
+	cv2.circle(disp_img, (pred_x, pred_y), 10, (100,255,100), -1)
+	cv2.line(disp_img, (250, 250), (pred_x, pred_y), (0,5,10), 4)
+	#cv2.line(disp_img, (250, 250), (gt_x, gt_y), (100,5,10), 4)
+	#cv2.line(temp_img, (cent_x, cent_y), (img_cent_x, img_cent_y), (200,255,150), lin_s)	
+	
+	cv2.imwrite('./temp/'+str(idx)+'output.jpg', disp_img)
 	cv2.imshow('Centered Image', disp_img)
         cv2.waitKey(0)
         cv2.destroyAllWindows()
