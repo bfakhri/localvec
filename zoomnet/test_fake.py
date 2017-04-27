@@ -89,8 +89,16 @@ model.fit(x_train, y_train,
           verbose=1,
           validation_data=(x_trainval, y_trainval))
 
-model.save_weights('model.h5')
-print('Saved Model as model.h5')
+#model.save_weights('model.h5')
+#print('Saved Model as model.h5')
+
+# serialize model to JSON
+model_json = model.to_json()
+with open("model.json", "w") as json_file:
+    json_file.write(model_json)
+# serialize weights to HDF5
+model.save_weights("model.h5")
+print("Saved model to disk")
 
 score = model.evaluate(x_test[1:30,:,:,:], y_test[1:30,:], verbose=0)
 

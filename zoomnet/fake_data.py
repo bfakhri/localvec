@@ -19,9 +19,9 @@ class vec:
 		# Populate those arrays	
 		for idx,sample in enumerate(sample_list):
 			frame = np.zeros([MAX_Y, MAX_X, NUM_CHANS], dtype=np.uint8)
-			cent_x = rand.uniform(-0.5, 0.5)
-			cent_y = rand.uniform(-0.5, 0.5)
-			scale = rand.uniform(0.05, 0.7)
+			cent_x = rand.uniform(-0.4, 0.4)
+			cent_y = rand.uniform(-0.4, 0.4)
+			scale = rand.uniform(0.05, 0.4)
 			# Load the image 
 			img = cv2.imread(img_listdir+sample+".jpg")
 			height, width, channels = img.shape
