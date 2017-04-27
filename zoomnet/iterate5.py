@@ -63,9 +63,12 @@ for idx,t_img in enumerate(x_test):
 		pred_z = int(prediction[2])
 		print(str(pred_x) + '\t' + str(pred_y) + '\t' + str(pred_z) + '\t' + str(net_x) + '\t' + str(net_y) + '\t' + str(net_z)) 
 		# Zoom the image
-		cur_frame = cv2.resize(cur_frame, (600,600), interpolation = cv2.INTER_CUBIC)
-		cur_frame = cur_frame[50:550,50:550]
-		net_z = net_z*float(6)/5
+		zoomer = int(500*(1+float(48)/(100+pred_z)))
+		lb = zoomer/2 - 500/2
+		rb = zoomer/2 + 500/2
+		cur_frame = cv2.resize(cur_frame, (zoomer,zoomer), interpolation = cv2.INTER_CUBIC)
+		cur_frame = cur_frame[lb:rb,lb:rb]
+		net_z = net_z*float(zoomer)/500
 
 	bb_img = x_test[idx].copy()
 	#cv2.circle(bb_img, (int(net_x+250), int(net_y+250)), 5, (0,100,0))
