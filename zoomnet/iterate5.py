@@ -11,6 +11,7 @@ from keras.models import model_from_json
 import numpy as np
 import cv2
 import math
+import IoU
 
 # load json and create model
 json_file = open('model.json', 'r')
@@ -32,6 +33,7 @@ v = vec()
 score = loaded_model.evaluate(x_test, y_test, verbose=0)
 print("%s: %.2f%%" % (loaded_model.metrics_names[1], score[1]*100))
 
+run_sum = 0
 for idx,t_img in enumerate(x_test):
 	cur_frame = x_test[idx].copy()
 	pred_x = 10
@@ -41,9 +43,11 @@ for idx,t_img in enumerate(x_test):
 	net_y = 0
 	net_z = 1
 
-	while(pred_z < 50):
+	while(pred_z < 50 and net_z < 15):
 		# Center the object
-		while((abs(pred_x)+abs(pred_y)) > 0):
+		shift_count = 0
+		while((abs(pred_x)+abs(pred_y)) > 2 and shift_count < 15):
+			shift_count = shift_count + 1
 			prediction = loaded_model.predict(np.expand_dims(cur_frame, axis=0))[0]
 			pred_x = int(prediction[0])
 			pred_y = int(prediction[1])
@@ -55,6 +59,10 @@ for idx,t_img in enumerate(x_test):
 			cur_frame = cv2.warpAffine(cur_frame, trans,(500,500))
 			net_x = net_x + pred_x*(float(1)/net_z)
 			net_y = net_y + pred_y*(float(1)/net_z)
+			#cv2.imshow('Original Image', x_test[idx])
+			#cv2.imshow('Zoomed Image', cur_frame)
+			#cv2.waitKey(0)
+			#cv2.destroyAllWindows()
 
 		# Zoom in 
 		prediction = loaded_model.predict(np.expand_dims(cur_frame, axis=0))[0]
@@ -72,12 +80,43 @@ for idx,t_img in enumerate(x_test):
 
 	bb_img = x_test[idx].copy()
 	#cv2.circle(bb_img, (int(net_x+250), int(net_y+250)), 5, (0,100,0))
+	# Calculate bounding box for the prediction
 	width = float(500)/(net_z)
 	height = float(500)/(net_z)
-	cv2.rectangle(bb_img, (int(net_x+250-width/2), int(net_y+250-height/2)), (int(net_x+250+width/2), int(net_y+250+height/2)), (0,255,0)) 
-	cv2.imshow('Original Image', x_test[idx])
-	cv2.imshow('Bounding Box Image', bb_img)
-	cv2.imshow('Zoomed Image', cur_frame)
-	cv2.waitKey(0)
-	cv2.destroyAllWindows()
+	box = []
+	box.append(int(net_x+250-width/2))
+	box.append(int(net_y+250-height/2))
+	box.append(int(net_x+250+width/2))
+	box.append(int(net_y+250+height/2))
+	# Calculate bounding box for the ground truth
+	gt_box = []
+	gt_width = float(500)*y_test[idx, 2]
+	gt_height = float(500)*y_test[idx, 2]
+	print(y_test[idx])
+	print(y_test[idx,0])
+	print(y_test[idx,1])
+	print(y_test[idx,2])
+	gt_box.append(int(y_test[idx,0]*500+250-gt_width/2))
+	gt_box.append(int(y_test[idx,1]*500+250-gt_height/2))
+	gt_box.append(int(y_test[idx,0]*500+250+gt_width/2))
+	gt_box.append(int(y_test[idx,1]*500+250+gt_height/2))
+	# Calc IoU
+	iou = IoU.bb_iou(box, gt_box)
+	run_sum = iou + run_sum
+	print("Box: ")
+	print(box)
+	print("GT Box: ")
+	print(gt_box)
+	print("The IoU for this image is: " + str(iou))
+	cv2.rectangle(bb_img, (box[0], box[1]), (box[2], box[3]), (0,255,0)) 
+	cv2.rectangle(bb_img, (gt_box[0], gt_box[1]), (gt_box[2], gt_box[3]), (255,0,0)) 
+	#cv2.imshow('Original Image', x_test[idx])
+	#cv2.imshow('Bounding Box Image', bb_img)
+	#cv2.imshow('Zoomed Image', cur_frame)
+	#cv2.waitKey(0)
+	#cv2.destroyAllWindows()
+
+average_acc = run_sum/len(x_test)
+print("Average IoU is: " + str(average_acc))
+	
 		
