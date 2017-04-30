@@ -64,9 +64,10 @@ Demonstration Workflow:
 	- This will test the model outputted in step 2
 	- An average intersection over union score will be calculated
 
+Note - Demonstration runs on Ubuntu 14.04 LTS
+
 
 Descriptions of all of the files are below:
-
 -----------------------------------------------------------------------------------------
 train_synthetic.py
 -----------------------------------------------------------------------------------------
