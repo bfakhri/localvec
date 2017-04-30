@@ -42,7 +42,7 @@ from keras.models import model_from_json
 import numpy as np
 import cv2
 from data_gen import load_synth
-from calculate_IoU import bb_iou
+from calculate_IoU import bbox_IoU
 
 # Instantiate the model by loading the json file 
 json = open('model_params.json', 'r')
@@ -137,7 +137,7 @@ for idx,t_img in enumerate(x_test):
 	gt_box.append(int(y_test[idx,0]*500+250+gt_width/2))
 	gt_box.append(int(y_test[idx,1]*500+250+gt_height/2))
 	# Calc IoU
-	iou = bb_iou(box, gt_box)
+	iou = bbox_IoU(box, gt_box)
 	run_sum = iou + run_sum
 	print("Box: ")
 	print(box)

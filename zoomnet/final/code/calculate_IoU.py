@@ -1,29 +1,19 @@
-'''
-Much of this code comes from the tutorial found at:
-http://www.pyimagesearch.com/2016/11/07/intersection-over-union-iou-for-object-detection/
+def bbox_IoU(bb_pred, bb_gt):
+	# Calculate the area of each box
+	prediction_area = (bb_pred[0] - bb_pred[2])*(bb_pred[1] - bb_pred[3])
+	groundtruth_area = (bb_gt[0] - bb_gt[2])*(bb_gt[1] - bb_gt[3])
+	
+	# Calculate the intersection rectangle bounds
+	topleft_x = max(bb_pred[0], bb_gt[0])
+	bottomright_x = min(bb_pred[2], bb_gt[2])
+	topleft_y = max(bb_pred[1], bb_gt[1])
+	bottomright_y = min(bb_pred[3], bb_gt[3])
+	# Calculate its area
+	inter_area = (bottomright_x - topleft_x)*(bottomright_y - topleft_y)
 
-'''
-
-'''
-bb_iou takes in two bounding boxes (in the form [xmin, ymin, xmax, ymax])
-and calculates their intersection over union.
-'''
-def bb_iou(boxA, boxB):
-	#determine the coordinates of the intersection
-	xA = max(boxA[0], boxB[0])
-	yA = max(boxA[1], boxB[1])
-	xB = min(boxA[2], boxB[2])
-	yB = min(boxA[3], boxB[3])
-
-	#compute the area of intersection rectangle
-	interArea = (xB - xA + 1)*(yB-yA +1)  #add one for offset, 
-
-	#compute the area of the predicion and ground-truth rect
-	boxA_area = (boxA[2] - boxA[0] +1) * (boxA[3] - boxA[1] + 1)
-	boxB_area = (boxB[2] - boxB[0] +1) * (boxB[3] - boxB[1] + 1)
-
-	iou = interArea/float(boxA_area + boxB_area -interArea) #subtract interarea because it's counted twice in the total area
-	if(iou < 0):
+	# Calculate IoU
+	IoU = inter_area/(prediction_area + groundtruth_area - inter_area)
+	if(IoU < 0):
 		return 0
 	else:
-		return iou
+		return IoU
