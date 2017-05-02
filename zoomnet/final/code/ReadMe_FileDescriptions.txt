@@ -121,4 +121,8 @@ Dependencies Written for the Project:
 Defines a single function that calculates the Intersection over Union (IoU) and returns
 this result. It is used by test_synthetic_iterative.py to assess the quality of the 
 model being tested. 
+
+***NOTE*** - 
+This Stack Overflow page was used as reference while writing this code:
+URL: http://stackoverflow.com/questions/28723670/intersection-over-union-between-two-detections
 -----------------------------------------------------------------------------------------
