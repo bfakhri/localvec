@@ -58,10 +58,6 @@ x_train = x_train.astype('float32')
 x_test = x_test.astype('float32')
 x_train /= 255
 x_test /= 255
-print('x_train shape:', x_train.shape)
-print(x_train.shape[0], 'train samples')
-print(x_trainval.shape[0], 'trainval samples')
-print(x_test.shape[0], 'test samples')
 
 model = Sequential()
 model.add(Conv2D(64, kernel_size=(5, 5),
