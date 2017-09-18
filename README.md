@@ -12,12 +12,12 @@ The network outputs a vector indicating how far we must zoom into the image (in 
 
 # Getting Started
 
-1) Install Necessary Dependencies
+## 1) Install Necessary Dependencies
 1.1) Install Keras
     - pip install keras
 
 1.2) Install TensorFlow
-    - We used this tutorial: https://www.tensorflow.org/install/
+    - Use this tutorial: https://www.tensorflow.org/install/
 
 1.3) Install OpenCV
     - We used this tutorial: http://docs.opencv.org/2.4/doc/tutorials/introduction/
