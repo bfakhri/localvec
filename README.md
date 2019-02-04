@@ -3,6 +3,9 @@
 ZoomNet is a deep object detection (localization) framework that works by iteratively zooming into an image. 
 The network outputs a vector indicating how far we must zoom into the image (in all direction) in order to center the object of interest. 
 
+
+Project Report [ZoomNet.pdf](https://github.com/bfakhri/localvec/blob/master/FakhriMoore_Report.pdf)
+
 # Dependencies
 
 * Python 2.7 or 3.5
@@ -52,7 +55,7 @@ Note - Demonstration runs on Ubuntu 14.04 LTS
 
 ## Blue is ground truth, green is ZoomNet's bounding box estimate
 
-### Trained on synthetic dataset
+### Trained on synthetic dataset to find target (circle)
 
 ![alt text](https://github.com/bfakhri/localvec/blob/master/images/3bb.jpg "Ground truth vs estimate bounding boxes")
 
