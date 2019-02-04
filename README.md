@@ -48,3 +48,14 @@ The network outputs a vector indicating how far we must zoom into the image (in 
 
 Note - Demonstration runs on Ubuntu 14.04 LTS
 
+# ZoomNet in Action - With Synthetic Dataset
+
+## ZoomNet trained to detect target (circle). Blue is ground truth, green is ZoomNet's estimate
+
+### Low-Res Haptic Display
+![alt text](https://github.com/bfakhri/localvec/blob/master/images/3bb.jpg "Ground truth vs estimate bounding boxes")
+
+### Low-Res Haptic Display Side View 
+![alt text](https://github.com/bfakhri/localvec/blob/master/images/15bb.jpg "Ground truth vs estimate bounding boxes")
+
+
